@@ -20,6 +20,8 @@ export default function Home() {
     );
   }
 
+    const rpcUrl: string = rpcUrl1;
+
   // Calculate statistics
   const stats = useMemo(() => {
     if (transactions.length === 0) return null;
@@ -35,7 +37,7 @@ export default function Home() {
     const avgTimeBetweenTx =
       timestamps.length > 1
         ? (Math.max(...timestamps) - Math.min(...timestamps)) /
-          (timestamps.length - 1)
+        (timestamps.length - 1)
         : 0;
 
     const oldestTx = timestamps.length > 0 ? Math.min(...timestamps) : 0;
@@ -91,7 +93,7 @@ export default function Home() {
     setLoading(true);
 
     try {
-      const response = await fetch(rpcUrl1, {
+      const response = await fetch(rpcUrl, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -242,7 +244,14 @@ export default function Home() {
                     cx="50%"
                     cy="50%"
                     labelLine={false}
-                    label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
+                    label={(props) => {
+                      const name = props?.name;
+                      const percent = props?.percent;
+
+                      if (!name || percent == null) return '';
+                      return `${name}: ${(percent * 100).toFixed(0)}%`;
+                    }}
+
                     outerRadius={100}
                     fill="#8884d8"
                     dataKey="value"
@@ -299,11 +308,10 @@ export default function Home() {
                   <div>
                     <div className="text-gray-400 text-sm mb-1">Status</div>
                     <div
-                      className={`inline-block px-3 py-1 rounded-full text-sm font-semibold ${
-                        tx.confirmationStatus === "finalized"
+                      className={`inline-block px-3 py-1 rounded-full text-sm font-semibold ${tx.confirmationStatus === "finalized"
                           ? "bg-green-500/20 text-green-400"
                           : "bg-yellow-500/20 text-yellow-400"
-                      }`}
+                        }`}
                     >
                       {tx.confirmationStatus}
                     </div>
