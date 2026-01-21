@@ -25,11 +25,11 @@ export default function Home() {
 
     async function fetcher() {
         if (!block) return;
-        
+
         setLoading(true);
         setError("");
         setBlockData(null);
-        
+
         const rpcUrl = process.env.NEXT_PUBLIC_SOLANA_RPC;
 
         try {
@@ -54,7 +54,7 @@ export default function Home() {
             });
 
             const body = await response.json();
-            
+
             if (body.error) {
                 setError(body.error.message || "Failed to fetch block");
             } else {
@@ -145,7 +145,7 @@ export default function Home() {
                             <div className="bg-gradient-to-br from-slate-900 to-black border-l-4 border-cyan-500 p-6">
                                 <div className="text-gray-500 text-xs mb-2 uppercase tracking-widest font-medium">Block Time</div>
                                 <div className="text-2xl font-black text-white">
-                                    {blockData.blockTime 
+                                    {blockData.blockTime
                                         ? new Date(blockData.blockTime * 1000).toLocaleTimeString()
                                         : "N/A"}
                                 </div>
@@ -173,7 +173,7 @@ export default function Home() {
                                 <div className="flex justify-between items-center border-b border-gray-800 pb-4">
                                     <span className="text-gray-500 text-sm uppercase tracking-wider font-medium">Block Date</span>
                                     <span className="text-white font-medium">
-                                        {blockData.blockTime 
+                                        {blockData.blockTime
                                             ? new Date(blockData.blockTime * 1000).toLocaleString()
                                             : "N/A"}
                                     </span>
@@ -204,7 +204,14 @@ export default function Home() {
                                                 cx="50%"
                                                 cy="50%"
                                                 labelLine={false}
-                                                label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
+                                                label={(props) => {
+                                                    const name = props?.name;
+                                                    const percent = props?.percent;
+
+                                                    if (!name || percent == null) return '';
+                                                    return `${name}: ${(percent * 100).toFixed(0)}%`;
+                                                }}
+
                                                 outerRadius={100}
                                                 fill="#8884d8"
                                                 dataKey="value"
@@ -257,9 +264,8 @@ export default function Home() {
                                         >
                                             <div className="flex justify-between items-center">
                                                 <span className="text-gray-500 text-sm uppercase tracking-wider font-medium">Transaction #{index + 1}</span>
-                                                <span className={`px-4 py-1 text-xs font-black uppercase tracking-wider ${
-                                                    tx.meta?.err ? "bg-red-500/20 text-red-400" : "bg-green-500/20 text-green-400"
-                                                }`}>
+                                                <span className={`px-4 py-1 text-xs font-black uppercase tracking-wider ${tx.meta?.err ? "bg-red-500/20 text-red-400" : "bg-green-500/20 text-green-400"
+                                                    }`}>
                                                     {tx.meta?.err ? "Failed" : "Success"}
                                                 </span>
                                             </div>
